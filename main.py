@@ -3,10 +3,10 @@ pygame.init()
 
 HEIGHT = 1100
 WIDTH = 800
-clock = pygame.time.Clock()
-screen = pygame.display.set_mode((HEIGHT, WIDTH))
 GREEN = (0, 255, 0)
 BLACK = (0, 0, 0)
+clock = pygame.time.Clock()
+screen = pygame.display.set_mode((HEIGHT, WIDTH))
 VEL = 25
 
 
