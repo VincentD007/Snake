@@ -1,21 +1,21 @@
 import pygame
 pygame.init()
 
-HEIGHT = 1100
-WIDTH = 800
+HEIGHT = 800
+WIDTH = 1000
 GREEN = (0, 255, 0)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
+BLUE = (0, 0, 255)
 clock = pygame.time.Clock()
-screen = pygame.display.set_mode((HEIGHT, WIDTH))
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
 VEL = 25
 
-apple_eaten = pygame.USEREVENT + 1
-collision = pygame.USEREVENT + 2
 
-
-def check_collision(snake):
+def collision(snake, boarders):
     if pygame.Rect.collidelist(snake[0], snake[1:]) != -1:
+        return True
+    if pygame.Rect.collidelist(snake[0], boarders[0:]) != -1:
         return True
     return False
 
@@ -26,19 +26,34 @@ def move_snake(snake, direction):
         snake[-num].y = snake[-num - 1].y
     if direction == pygame.K_UP:
         snake[0].y -= VEL
+
     elif direction == pygame.K_DOWN:
         snake[0].y += VEL
+
     elif direction == pygame.K_LEFT:
         snake[0].x -= VEL
+
     elif direction == pygame.K_RIGHT:
         snake[0].x += VEL
+
     for part in snake:
         pygame.draw.rect(screen, GREEN, part)
 
 
 def main():
-    snake = [pygame.Rect(HEIGHT/2, WIDTH/2, 25, 25)]
+    snake = [pygame.Rect(WIDTH/2, HEIGHT/2, 25, 25)]
     apples = [pygame.Rect(HEIGHT/2, WIDTH/2, 25, 25)]
+
+    boarders_top = pygame.Rect(0, -5, WIDTH, 5)
+
+    boarders_bottom = pygame.Rect(0, HEIGHT, WIDTH, 5)
+
+    boarders_left = pygame.Rect(-5, 0, 5, HEIGHT)
+
+    boarders_right = pygame.Rect(WIDTH, 0, 5, HEIGHT)
+
+    boarders = [boarders_top, boarders_bottom, boarders_left, boarders_right]
+
     last_input = None
     next_input = None
     play_game = True
@@ -68,10 +83,14 @@ def main():
                     if last_input != pygame.K_LEFT:
                         next_input = pygame.K_RIGHT
         last_input = next_input
-        if not check_collision(snake):
+
+        if not collision(snake, boarders):
+            pygame.display.update()
             screen.fill(BLACK)
+            for boarder in boarders:
+                pygame.draw.rect(screen, RED, boarder)
             move_snake(snake, last_input)
-        pygame.display.update()
+
     pygame.quit()
 
 
