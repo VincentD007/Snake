@@ -65,7 +65,7 @@ def main():
     last_input = None
     next_input = None
     play_game = True
-# Game loop keeps simultaneously updates movement inputs using the pygame event buffer
+# Game loop simultaneously updates movement inputs using the pygame event buffer
     while play_game:
         clock.tick(15)
         events = pygame.event.get()
