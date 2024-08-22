@@ -23,8 +23,10 @@ def collision(snake, boarders, apple):
     elif pygame.Rect.collidelist(snake[0], boarders[0:]) != -1:
         return True
     if len(apple) == 1:
+        #If the snake eats an apple, it adds three to its length
         if pygame.Rect.collidelist(snake[0], apple) != -1:
-            snake.append(pygame.Rect(WIDTH/2, HEIGHT/2, 25, 25))
+            for _ in range(3):
+                snake.append(pygame.Rect(snake[-1].x, snake[-1].y, 25, 25))
             apple.pop()
         else:
             pygame.draw.rect(screen, RED, apple[0])
