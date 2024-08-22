@@ -1,5 +1,7 @@
 import pygame
 import random
+
+
 pygame.init()
 
 HEIGHT = 800
@@ -11,6 +13,8 @@ BLUE = (0, 0, 255)
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 VEL = 25
+end_font = pygame.font.SysFont("comicsans", 100)
+
 
 # Detects all collisions while simultaneously adding and removing apples
 def collision(snake, boarders, apple):
@@ -18,20 +22,22 @@ def collision(snake, boarders, apple):
         return True
     elif pygame.Rect.collidelist(snake[0], boarders[0:]) != -1:
         return True
-    if len(apple) > 0:
+    if len(apple) == 1:
         if pygame.Rect.collidelist(snake[0], apple) != -1:
             snake.append(pygame.Rect(WIDTH/2, HEIGHT/2, 25, 25))
             apple.pop()
         else:
             pygame.draw.rect(screen, RED, apple[0])
+    # Prevents apple from spawning onto the snake
     else:
-        x = random.choice(range(0, 1000, 25))
-        y = random.choice(range(0, 800, 25))
-        for part in snake:
-            if part.x == x:
-                if part.y == y:
-                    collision(snake, boarders, apple)
-        apple.append(pygame.Rect(x, y, 25, 25))
+        apple_loc = [(random.choice([x for x in range(0, WIDTH-25, 25)]),
+                      random.choice([x for x in range(0, HEIGHT-25, 25)]))]
+
+        snake_loc = [(part.x, part.y) for part in snake]
+        if set(apple_loc).intersection(set(snake_loc)) != set():
+            collision(snake, boarders, apple)
+        else:
+            apple.append(pygame.Rect(apple_loc[0][0], apple_loc[0][1], 25, 25))
     return False
 
 # Moves the snake by starting from the last snake cube and setting the (x, y) values equal to the next cube
@@ -98,7 +104,21 @@ def main():
             for boarder in boarders:
                 pygame.draw.rect(screen, RED, boarder)
             move_snake(snake, last_input)
-
+            #End screen text
+        else:
+            end_screen_text = pygame.font.Font.render(end_font, f"You Died!", True, (255, 255, 255))
+            end_score_text = pygame.font.Font.render(end_font, "Score: ", True, (255, 255, 255))
+            end_score = pygame.font.Font.render(end_font, f"{len(snake) - 1}", True, (0, 150, 0))
+            screen.blit(end_screen_text, ((WIDTH/2) - 160, (HEIGHT/2) - 100))
+            screen.blit(end_score_text, ((WIDTH / 2) - 140, (HEIGHT / 2)))
+            screen.blit(end_score, ((WIDTH / 2) + 100, (HEIGHT / 2)))
+            pygame.display.update()
+            for event in events:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        main()
+                    elif event.key == pygame.K_ESCAPE:
+                        play_game = False
     pygame.quit()
 
 if __name__ == '__main__':
