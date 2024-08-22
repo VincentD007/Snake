@@ -31,7 +31,7 @@ def collision(snake, boarders, apple):
     # Prevents apple from spawning onto the snake
     else:
         apple_loc = [(random.choice([x for x in range(0, WIDTH-25, 25)]),
-                      random.choice([x for x in range(0, HEIGHT-25, 25)]))]
+                      random.choice([y for y in range(0, HEIGHT-25, 25)]))]
 
         snake_loc = [(part.x, part.y) for part in snake]
         if set(apple_loc).intersection(set(snake_loc)) != set():
